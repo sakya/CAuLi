@@ -1,0 +1,112 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Authors>Paolo Iommarini</Authors>
+    <Copyright>Copyright © 2016, 2021 by Paolo Iommarini</Copyright>
+    <Version>1.0.0.0</Version>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="Help\LibraryPage.txt" />
+    <None Remove="Help\LyricsPage.txt" />
+    <None Remove="Help\PlayerPage.txt" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Help\LibraryPage.txt" />
+    <EmbeddedResource Include="Help\LyricsPage.txt" />
+    <EmbeddedResource Include="Help\PlayerPage.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Libray\Libray.csproj" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Condition="$([MSBuild]::IsOSPlatform('osx'))" Include="Bass.Net.Linux">
+      <HintPath>Lib/Bass/Bass.Net.OSX.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Condition="$([MSBuild]::IsOSPlatform('linux'))" Include="Bass.Net.Linux">
+      <HintPath>Lib/Bass/Bass.Net.Linux.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Condition="$([MSBuild]::IsOSPlatform('windows'))" Include="Bass.Net">
+      <HintPath>Lib/Bass/Bass.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CopyBassOsx" Condition="$([MSBuild]::IsOSPlatform('osx'))" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Lib/Bass/libbass.dylib" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ac3.dylib" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ape.dylib" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_fx.dylib" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_mpc.dylib" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassflac.dylib" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassmix.dylib" DestinationFolder="$(OutDir)" />
+  </Target>
+  <Target Name="PublishBassOsx" Condition="$([MSBuild]::IsOSPlatform('osx'))" AfterTargets="AfterPublish">
+    <Copy SourceFiles="Lib/Bass/libbass.dylib" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ac3.dylib" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ape.dylib" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_fx.dylib" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_mpc.dylib" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassflac.dylib" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassmix.dylib" DestinationFolder="$(PublishDir)" />
+  </Target>
+  <Target Name="CopyBassUnix" Condition="$([MSBuild]::IsOSPlatform('linux'))" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Lib/Bass/libbass.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_aac.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ac3.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ape.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_fx.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_mpc.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassalac.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassflac.so" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassmix.so" DestinationFolder="$(OutDir)" />
+  </Target>
+  <Target Name="PublishBassUnix" Condition="$([MSBuild]::IsOSPlatform('linux'))" AfterTargets="AfterPublish">
+    <Copy SourceFiles="Lib/Bass/libbass.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_aac.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ac3.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_ape.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_fx.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbass_mpc.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassalac.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassflac.so" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/libbassmix.so" DestinationFolder="$(PublishDir)" />
+  </Target>
+  <Target Name="CopyBassWindows" Condition="$([MSBuild]::IsOSPlatform('windows'))" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Lib/Bass/bass.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_aac.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_ac3.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_ape.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_fx.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_mpc.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bassalac.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bassflac.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/bassmix.dll" DestinationFolder="$(OutDir)" />
+    <Copy SourceFiles="Lib/Bass/basswma.dll" DestinationFolder="$(OutDir)" />
+  </Target>
+  <Target Name="PublishBassWindows" Condition="$([MSBuild]::IsOSPlatform('windows'))" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Lib/Bass/bass.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_aac.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_ac3.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_ape.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_fx.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bass_mpc.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bassalac.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bassflac.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/bassmix.dll" DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="Lib/Bass/basswma.dll" DestinationFolder="$(PublishDir)" />
+  </Target>
+
+</Project>

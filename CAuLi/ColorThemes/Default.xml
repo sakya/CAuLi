@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Available colors:
+Black
+DarkBlue
+DarkGreen
+DarkCyan
+DarkRed
+DarkMagenta
+DarkYellow
+Gray
+DarkGray
+Blue
+Green
+Cyan
+Red
+Magenta
+Yellow
+White
+-->
+<ColorTheme Name="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <AccentColor>DarkGreen</AccentColor>
+  <OverAccentColor>White</OverAccentColor>
+  <Background>Black</Background>
+  <ReverseBackground>Gray</ReverseBackground>
+  <Foreground>Gray</Foreground>
+  <ReverseForeground>Black</ReverseForeground>
+  <ForegroundHighlight>White</ForegroundHighlight>
+  <BackgroundTitle>DarkBlue</BackgroundTitle>
+  <ForegroundTitle>White</ForegroundTitle>
+</ColorTheme>

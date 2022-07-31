@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Equalizer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Reggae</Name>
+  <Bands>
+    <EqualizerBand>
+      <Gain>0</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>-1.3</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>-3.7</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>-0.7</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>2</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.3</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>1.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0</Gain>
+    </EqualizerBand>
+  </Bands>
+</Equalizer>

@@ -1,0 +1,21 @@
+The Player page displays the current track and playlist
+
+# Keys #
+CTRL-LEFT ARROW   REW 3 secs
+CTRL-RIGHT ARROW  FFWD 3 secs
+CTRL-%settings.KeyCodeLyrics%            Show lyrics
+ESCAPE            Go back to the previous page
+
+# General Keys #
++           Raise music volume
+-           Lower music volume
+SPACE       Pause/Play music
+LEFT ARROW  Previous track
+RIGHT ARROW Next track
+CTRL-%settings.KeyCodePanRight%      Balance right
+CTRL-%settings.KeyCodePanLeft%      Balance left
+CTRL-%settings.KeyCodeRepeat%      Toggle repeat
+CTRL-%settings.KeyCodeShuffle%      Toggle shuffle
+CTRL-%settings.KeyCodeToggleEq%      Toggle equalizer
+CTRL-%settings.KeyCodeNextEq%      Next equalizer
+CTRL-%settings.KeyCodeQuit%      Exit

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Equalizer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Dance</Name>
+  <Bands>
+    <EqualizerBand>
+      <Gain>6.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>6.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>5.3</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>4</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>2</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>-3.1</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>-3.1</Gain>
+    </EqualizerBand>
+  </Bands>
+</Equalizer>

@@ -1,0 +1,22 @@
+The Library page let you navigate your music library by Artist/Album.
+You can search the listing by keyboard.
+
+# Keys #
+TAB         Move focus between artists/albums/tracks listing
+ENTER       Play the selected artist/album/track
+CTRL-%settings.KeyCodePlayer%      Go to now playing page
+CTRL-%settings.KeyCodeLyrics%      Show lyrics
+
+# General Keys #
++           Raise music volume
+-           Lower music volume
+SPACE       Pause/Play music
+LEFT ARROW  Previous track
+RIGHT ARROW Next track
+CTRL-%settings.KeyCodePanRight%      Balance right
+CTRL-%settings.KeyCodePanLeft%      Balance left
+CTRL-%settings.KeyCodeRepeat%      Toggle repeat
+CTRL-%settings.KeyCodeShuffle%      Toggle shuffle
+CTRL-%settings.KeyCodeToggleEq%      Toggle equalizer
+CTRL-%settings.KeyCodeNextEq%      Next equalizer
+CTRL-%settings.KeyCodeQuit%      Exit

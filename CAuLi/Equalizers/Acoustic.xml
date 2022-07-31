@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Equalizer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Acoustic</Name>
+  <Bands>
+    <EqualizerBand>
+      <Gain>4.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>4.5</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.5</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0.4</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>1.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>1.6</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.3</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.3</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>1.3</Gain>
+    </EqualizerBand>
+  </Bands>
+</Equalizer>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Equalizer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Club</Name>
+  <Bands>
+    <EqualizerBand>
+      <Gain>0.1</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0.1</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>2.3</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.5</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.5</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>3.5</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>2.6</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0.1</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0.1</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>0.2</Gain>
+    </EqualizerBand>
+  </Bands>
+</Equalizer>

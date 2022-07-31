@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Equalizer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>Rock</Name>
+  <Bands>
+    <EqualizerBand>
+      <Gain>5.9</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>4.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>1.5</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>1.8</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>4.6</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>1.1</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>2.6</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>5.5</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>6.6</Gain>
+    </EqualizerBand>
+    <EqualizerBand>
+      <Gain>7</Gain>
+    </EqualizerBand>
+  </Bands>
+</Equalizer>

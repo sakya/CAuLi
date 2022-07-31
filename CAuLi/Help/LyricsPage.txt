@@ -1,0 +1,18 @@
+The Lyrics page displays lyrics for the current track
+
+# Keys #
+ESCAPE            Go back to the previous page
+
+# General Keys #
++           Raise music volume
+-           Lower music volume
+SPACE       Pause/Play music
+LEFT ARROW  Previous track
+RIGHT ARROW Next track
+CTRL-%settings.KeyCodePanRight%      Balance right
+CTRL-%settings.KeyCodePanLeft%      Balance left
+CTRL-%settings.KeyCodeRepeat%      Toggle repeat
+CTRL-%settings.KeyCodeShuffle%      Toggle shuffle
+CTRL-%settings.KeyCodeToggleEq%      Toggle equalizer
+CTRL-%settings.KeyCodeNextEq%      Next equalizer
+CTRL-%settings.KeyCodeQuit%      Exit
