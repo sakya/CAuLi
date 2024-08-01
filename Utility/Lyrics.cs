@@ -12,7 +12,7 @@ namespace Utility
 {
     public static class Lyrics
     {
-        #region Classes 
+        #region Classes
         [XmlRoot("GetLyricResult", Namespace = "http://api.chartlyrics.com/")]
         public class ChartLyrics
         {
@@ -88,7 +88,7 @@ namespace Utility
 
             // ChartLyrics
             url = string.Format("http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect?artist={0}&song={1}",
-                  Uri.EscapeUriString(artist), Uri.EscapeUriString(title));
+                  Uri.EscapeDataString(artist), Uri.EscapeDataString(title));
             response = await GetContent(url);
             if (!string.IsNullOrEmpty(response)) {
                 ChartLyrics cl = Deserialize<ChartLyrics>(response);
@@ -98,7 +98,7 @@ namespace Utility
 
             // LoloLyrics
             url = string.Format("http://api.lololyrics.com/0.5/getLyric?artist={0}&track={1}",
-                  Uri.EscapeUriString(artist), Uri.EscapeUriString(title));
+                  Uri.EscapeDataString(artist), Uri.EscapeDataString(title));
             response = await GetContent(url);
             if (!string.IsNullOrEmpty(response)) {
                 LoloLyrics ll = Deserialize<LoloLyrics>(response);

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Utility
 {
-  public class String
+  public static class String
   {
     /// <summary>
     /// Encrypt a string using SHA1
@@ -19,7 +16,7 @@ namespace Utility
       if (string.IsNullOrEmpty(input))
         return string.Empty;
 
-      using (SHA1Managed sha1 = new SHA1Managed()) {
+      using (var sha1 = SHA1.Create()) {
         var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(input));
         var sb = new StringBuilder(hash.Length * 2);
 
@@ -39,7 +36,7 @@ namespace Utility
       if (string.IsNullOrEmpty(input))
         return string.Empty;
       MD5 md5 = MD5.Create();
-      byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+      byte[] inputBytes = Encoding.ASCII.GetBytes(input);
       byte[] hash = md5.ComputeHash(inputBytes);
 
       StringBuilder sb = new StringBuilder();
