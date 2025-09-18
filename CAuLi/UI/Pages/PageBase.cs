@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Utility;
 
 namespace CAuLi.UI.Pages
@@ -95,9 +92,9 @@ namespace CAuLi.UI.Pages
     {
       if (m_Screen.Width < m_Screen.MinimumWidth || m_Screen.Height < m_Screen.MinimumHeight) {
         m_Screen.Clear();
-        m_Screen.WriteString(0, 0, m_Screen.Width, UI.ColorTheme.Instance.Background, ConsoleColor.Yellow, 
+        m_Screen.WriteString(0, 0, m_Screen.Width, UI.ColorTheme.Instance.Background, ConsoleColor.Yellow,
                              string.Format("Window too small: {0}x{1}", width, height));
-        m_Screen.WriteString(0, 1, m_Screen.Width, UI.ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, 
+        m_Screen.WriteString(0, 1, m_Screen.Width, UI.ColorTheme.Instance.Background, ColorTheme.Instance.Foreground,
                              string.Format("Minimum size: {0}x{1}", m_Screen.MinimumWidth, m_Screen.MinimumHeight));
       }
     }

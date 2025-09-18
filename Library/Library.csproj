@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    <PackageReference Include="System.Data.SQLite" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>

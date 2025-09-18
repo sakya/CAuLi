@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Utility;
 
 namespace CAuLi.UI.Pages
@@ -105,7 +101,7 @@ namespace CAuLi.UI.Pages
     }
 
     private async void GetLyricsThread(object state)
-    {      
+    {
       if (m_Track != null) {
         string lyrics = Library.Library.Instance.GetLyrics(m_Track.FilePath);
         if (string.IsNullOrEmpty(lyrics))

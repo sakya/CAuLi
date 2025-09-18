@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CAuLi.UI;
 
-namespace CAuLi.UI
+public enum HorizontalAlignment
 {
-  public enum HorizontalAlignment
-  {
-    Left,
-    Center,
-    Right
-  }
+  Left,
+  Center,
+  Right
+}
 
-  public enum VerticalAlignment
-  {
-    Top,
-    Center,
-    Bottom
-  }
-
+public enum VerticalAlignment
+{
+  Top,
+  Center,
+  Bottom
 }

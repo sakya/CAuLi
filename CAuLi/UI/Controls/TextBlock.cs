@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CAuLi.UI.Controls
 {
@@ -51,7 +48,7 @@ namespace CAuLi.UI.Controls
       get { return m_Text; }
       set
       {
-        m_Text = value;        
+        m_Text = value;
       }
     }
 
@@ -81,7 +78,7 @@ namespace CAuLi.UI.Controls
           }
           break;
         case ConsoleKey.DownArrow:
-          if (m_FirstLine + 1 < m_Lines.Count) { 
+          if (m_FirstLine + 1 < m_Lines.Count) {
             m_FirstLine++;
             NeedsRedraw = true;
             return true;

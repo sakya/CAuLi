@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility;
 
 namespace CAuLi.UI.Pages
@@ -86,7 +83,7 @@ namespace CAuLi.UI.Pages
       vars["%settings.KeyCodeNextEq%"] = string.Format("{0}", (char)AppSettings.Instance.KeyCodeNextEq);
       vars["%settings.KeyCodeShuffle%"] = string.Format("{0}", (char)AppSettings.Instance.KeyCodeShuffle);
 
-      foreach (KeyValuePair<string, string> v in vars) 
+      foreach (KeyValuePair<string, string> v in vars)
         res = res.Replace(v.Key, v.Value);
 
       return res;

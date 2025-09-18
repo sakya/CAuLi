@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CAuLi.UI.Controls
 {
@@ -11,7 +8,7 @@ namespace CAuLi.UI.Controls
     double m_Value = 0;
     int m_Chars = 0;
 
-    public ProgressBar() : 
+    public ProgressBar() :
       base()
     {
       Focusable = false;

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using Library.Classes;
 using Utility;
 using static CAuLi.Player;
 
@@ -53,7 +50,7 @@ namespace CAuLi.UI.Pages
       {
         Library.Classes.Track t = eArgs.Tag as Library.Classes.Track;
         int index = m_PLaylist.Items.IndexOf(eArgs);
-        if (index >= 0) 
+        if (index >= 0)
           Player.Instance.Play(index);
       };
 
@@ -125,10 +122,9 @@ namespace CAuLi.UI.Pages
     #region Private operations
     private string FormatTrack(UI.Controls.MenuControl menu, UI.Controls.MenuControl.MenuItem item)
     {
-      Library.Classes.Track track = item.Tag as Library.Classes.Track;
-      if (track != null) {
-        string time = track.Duration.ToString(@"mm\:ss");
-        string res = UI.Screen.ElideString(item.Text, menu.Width - 6);
+      if (item.Tag is Track track) {
+        var time = track.Duration.ToString(@"mm\:ss");
+        var res = UI.Screen.ElideString(item.Text, menu.Width - 6);
         return string.Format("{0}{1}{2}", res, new string(' ', menu.Width - res.Length - time.Length), time);
       }
       return item.Text;
@@ -170,7 +166,7 @@ namespace CAuLi.UI.Pages
       m_Screen.WriteString(m_Screen.Width - 20, 2, m_Screen.Width, ColorTheme.Instance.Background, ColorTheme.Instance.AccentColor, "Shuffle:");
       m_Screen.WriteString(m_Screen.Width - 11, 2, 11, ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, Player.Instance.Shuffle ? "ON " : "OFF");
 
-      // Repeat: 
+      // Repeat:
       m_Screen.WriteString(m_Screen.Width - 20, 3, m_Screen.Width, ColorTheme.Instance.Background, ColorTheme.Instance.AccentColor, "Repeat :");
       if (Player.Instance.Repeat == RepeatType.None)
         m_Screen.WriteString(m_Screen.Width - 11, 3, 11, ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, "OFF");
@@ -183,8 +179,8 @@ namespace CAuLi.UI.Pages
       if (track != null) {
         m_ProgressBar.Maximum = track.Duration.TotalSeconds;
 
-        if (status.PlayList != null) 
-          m_Screen.WriteString(8, 1, m_Screen.Width - 8 - 21, ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, 
+        if (status.PlayList != null)
+          m_Screen.WriteString(8, 1, m_Screen.Width - 8 - 21, ColorTheme.Instance.Background, ColorTheme.Instance.Foreground,
             string.Format("{0}/{1}", status.PlayList.CurrentIndex + 1, status.PlayList.TracksCount).PadRight(m_Screen.Width - 8 - 21));
         else
           m_Screen.WriteString(8, 1, m_Screen.Width - 8 - 21, ColorTheme.Instance.Background, ColorTheme.Instance.ForegroundHighlight, "-".PadRight(m_Screen.Width - 8 - 21));

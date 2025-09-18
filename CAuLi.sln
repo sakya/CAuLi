@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAuLi", "CAuLi\CAuLi.csproj", "{56D328F6-706B-4404-B892-0B48F7177E6B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libray", "Libray\Libray.csproj", "{23C71E1F-DDEB-40BC-BF9C-028DB40B372C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "Library\Library.csproj", "{23C71E1F-DDEB-40BC-BF9C-028DB40B372C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{BAAA5C3A-CBC4-4DD9-B9D6-2AC105E0D38B}"
 EndProject
