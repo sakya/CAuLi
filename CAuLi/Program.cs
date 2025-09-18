@@ -22,15 +22,15 @@ class Program
 
     public static string RootPath { get; private set; }
 
-    static bool m_Running = true;
-    static UI.Pages.PageBase m_CurrentPage = null;
-    static List<BackStackEntry> m_BackStack = new List<BackStackEntry>();
-    static int m_TracksAdded = 0;
+    private static bool _running = true;
+    private static UI.Pages.PageBase _currentPage;
+    private static readonly List<BackStackEntry> BackStack = [];
+    private static int _tracksAdded;
 
     static void PrintInfo(string settingsPath = null)
     {
         Console.WriteLine("{0} v.{1}", Assembly.GetExecutingAssembly().GetName().Name, Assembly.GetExecutingAssembly().GetName().Version);
-        Console.WriteLine("Copyright (c) 2016, 2021 Paolo Iommarini");
+        Console.WriteLine("Copyright (c) 2016, 2025 Paolo Iommarini");
         Console.WriteLine();
 
         if (!string.IsNullOrEmpty(settingsPath))
@@ -97,7 +97,7 @@ class Program
                 if (UI.ColorTheme.Instance == null)
                     UI.ColorTheme.Instance = new UI.ColorTheme();
             } catch (Exception ex) {
-                System.Diagnostics.Debug.WriteLine(string.Format("Error loading color theme: {0}", ex.Message));
+                Debug.WriteLine(string.Format("Error loading color theme: {0}", ex.Message));
                 UI.ColorTheme.Instance = new UI.ColorTheme();
             }
         }
@@ -121,17 +121,17 @@ class Program
 
         Library.Library.Instance.TrackAdded += (s, e) =>
         {
-            m_TracksAdded++;
-            if (m_TracksAdded % 100 == 0 && m_CurrentPage is UI.Pages.LibraryPage) {
-                var lp = m_CurrentPage as UI.Pages.LibraryPage;
+            _tracksAdded++;
+            if (_tracksAdded % 100 == 0 && _currentPage is UI.Pages.LibraryPage) {
+                var lp = _currentPage as UI.Pages.LibraryPage;
                 lp.Refresh();
             }
         };
 
         Library.Library.Instance.ScanFinished += (s, e) =>
         {
-            if (e.Result.TracksAdded + e.Result.TracksRemoved + e.Result.TracksUpdated > 0 && m_CurrentPage is UI.Pages.LibraryPage) {
-                var lp = m_CurrentPage as UI.Pages.LibraryPage;
+            if (e.Result.TracksAdded + e.Result.TracksRemoved + e.Result.TracksUpdated > 0 && _currentPage is UI.Pages.LibraryPage) {
+                var lp = _currentPage as UI.Pages.LibraryPage;
                 lp.Refresh();
             }
         };
@@ -143,20 +143,20 @@ class Program
         // Input thread
         ThreadPool.QueueUserWorkItem(InputThread);
 
-        m_CurrentPage = new UI.Pages.LibraryPage(UI.Screen.Instance);
-        m_CurrentPage.Init(null, null);
+        _currentPage = new UI.Pages.LibraryPage(UI.Screen.Instance);
+        _currentPage.Init(null, null);
 
         // Application run thread:
         ThreadPool.QueueUserWorkItem(ApplicationThread);
 
-        while (m_Running)
+        while (_running)
             Thread.Sleep(100);
     }
 
     private static async void LibraryUpdateThread(object state)
     {
         DateTime time = DateTime.UtcNow;
-        m_TracksAdded = 0;
+        _tracksAdded = 0;
         List<string> folders = AppSettings.Instance.MusicFolders;
         UpdateResult res = await Library.Library.Instance.Update(AppSettings.Instance.MusicFolders, AppSettings.Instance.LastMusicFolders, AppSettings.Instance.LastLibraryUpdate);
         if (res != null && res.Result) {
@@ -169,26 +169,26 @@ class Program
     private static void ApplicationThread(object state)
     {
         // Main loop:
-        while (m_CurrentPage != null) {
-            UI.Pages.PageReturnValue res = m_CurrentPage.Run();
+        while (_currentPage != null) {
+            UI.Pages.PageReturnValue res = _currentPage.Run();
             if (res.NavigateTo != null) {
                 // Forward
                 UI.Pages.PageBase newPage = (UI.Pages.PageBase)Activator.CreateInstance(res.NavigateTo, new object[] { UI.Screen.Instance });
                 if (newPage != null) {
                     newPage.Init(res.Parameter, null);
-                    m_BackStack.Add(new BackStackEntry() { Type = m_CurrentPage.GetType(), SaveState = m_CurrentPage.GetSaveState() });
-                    m_CurrentPage.Dispose();
-                    m_CurrentPage = newPage;
+                    BackStack.Add(new BackStackEntry() { Type = _currentPage.GetType(), SaveState = _currentPage.GetSaveState() });
+                    _currentPage.Dispose();
+                    _currentPage = newPage;
                 }
             } else {
                 // Back
-                m_CurrentPage.Dispose();
-                m_CurrentPage = null;
-                if (m_BackStack.Count > 0) {
-                    BackStackEntry entry = m_BackStack.Last();
-                    m_CurrentPage = (UI.Pages.PageBase)Activator.CreateInstance(entry.Type, new object[] { UI.Screen.Instance });
-                    m_CurrentPage.Init(res.Parameter, entry.SaveState);
-                    m_BackStack.RemoveAt(m_BackStack.Count - 1);
+                _currentPage.Dispose();
+                _currentPage = null;
+                if (BackStack.Count > 0) {
+                    BackStackEntry entry = BackStack.Last();
+                    _currentPage = (UI.Pages.PageBase)Activator.CreateInstance(entry.Type, new object[] { UI.Screen.Instance });
+                    _currentPage.Init(res.Parameter, entry.SaveState);
+                    BackStack.RemoveAt(BackStack.Count - 1);
                 }
             }
         }
@@ -201,7 +201,7 @@ class Program
             Debug.WriteLine("Key pressed: {0} {1}", key.Key, key.Modifiers);
 
             // Page key:
-            if (m_CurrentPage != null && m_CurrentPage.KeyPress(key))
+            if (_currentPage != null && _currentPage.KeyPress(key))
                 continue;
 
             // General keys
@@ -342,7 +342,7 @@ class Program
                 PrintInfo(RootPath);
                 Console.WriteLine("Goodbye...");
                 Console.CursorVisible = true;
-                m_Running = false;
+                _running = false;
                 Environment.Exit(0);
             }
 
