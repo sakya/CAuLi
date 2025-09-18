@@ -46,9 +46,9 @@ public class Equalizer
 
 partial class Player
 {
-  string m_EqualizerName = string.Empty;
-  List<int> m_Equalizer = null;
-  List<Equalizer> m_Equalizers = new List<Equalizer>();
+  private string _equalizerName = string.Empty;
+  private List<int> _equalizer;
+  private readonly List<Equalizer> _equalizers = [];
 
   public delegate void EqualizerChangedHandler(Player sender, string eqName);
   public EqualizerChangedHandler EqualizerChanged;
@@ -57,18 +57,18 @@ partial class Player
   {
     get
     {
-      return m_Equalizer != null && m_Equalizer.Count > 0;
+      return _equalizer != null && _equalizer.Count > 0;
     }
   }
 
   public string EqualizerName
   {
-    get { return m_EqualizerName; }
+    get { return _equalizerName; }
   }
 
   public List<Equalizer> Equalizers
   {
-    get { return m_Equalizers; }
+    get { return _equalizers; }
   }
 
   public void LoadStandardEqualizers()
@@ -79,7 +79,7 @@ partial class Player
         using (StreamReader sr = new StreamReader(f)) {
           Equalizer eq = Utility.Serialization.Deserialize<Equalizer>(sr.BaseStream);
           if (eq != null)
-            m_Equalizers.Add(eq);
+            _equalizers.Add(eq);
         }
       }
     }
@@ -87,17 +87,17 @@ partial class Player
 
   public void RemoveEqualizer()
   {
-    if (m_Equalizer != null) {
-      foreach (int fx in m_Equalizer)
-        Bass.BASS_ChannelRemoveFX(m_BassMixerStreamHandle, fx);
-      m_Equalizer.Clear();
+    if (_equalizer != null) {
+      foreach (int fx in _equalizer)
+        Bass.BASS_ChannelRemoveFX(_bassMixerStreamHandle, fx);
+      _equalizer.Clear();
       EqualizerChanged?.Invoke(this, string.Empty);
     }
   } // RemoveEqualizer
 
   public void SetEqualizer(string name)
   {
-    foreach (Equalizer eq in m_Equalizers) {
+    foreach (Equalizer eq in _equalizers) {
       if (string.Compare(eq.Name, name, true) == 0) {
         SetEqualizer(eq);
         break;
@@ -112,7 +112,7 @@ partial class Player
     if (eq.Bands == null || eq.Bands.Count != 10)
       throw new ArgumentException("Equalizer bands must be ten");
 
-    if (m_Equalizer != null)
+    if (_equalizer != null)
       RemoveEqualizer();
 
     int[] freq = new int[] { 32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000 };
@@ -128,15 +128,15 @@ partial class Player
       eqp.fCenter = freq[idx];
       eqp.fGain = eqb.Gain;
 
-      int fxHandle = Bass.BASS_ChannelSetFX(m_BassMixerStreamHandle, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);
+      int fxHandle = Bass.BASS_ChannelSetFX(_bassMixerStreamHandle, BASSFXType.BASS_FX_DX8_PARAMEQ, 0);
       if (fxHandle != 0) {
-        if (m_Equalizer == null)
-          m_Equalizer = new List<int>();
-        m_Equalizer.Add(fxHandle);
+        if (_equalizer == null)
+          _equalizer = new List<int>();
+        _equalizer.Add(fxHandle);
         Bass.BASS_FXSetParameters(fxHandle, eqp);
       }
     }
-    m_EqualizerName = eq.Name;
+    _equalizerName = eq.Name;
     EqualizerChanged?.Invoke(this, eq.Name);
     AppSettings.Instance.EqualizerName = eq.Name;
     AppSettings.Instance.Save();

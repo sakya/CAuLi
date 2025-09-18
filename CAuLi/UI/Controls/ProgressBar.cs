@@ -5,8 +5,8 @@ namespace CAuLi.UI.Controls
 {
   class ProgressBar : ControlBase
   {
-    double m_Value = 0;
-    int m_Chars = 0;
+    private double _value = 0;
+    private int _chars = 0;
 
     public ProgressBar() :
       base()
@@ -15,18 +15,18 @@ namespace CAuLi.UI.Controls
     }
 
     public double Value {
-      get { return m_Value; }
+      get { return _value; }
       set
       {
-        if (m_Value != value) {
-          m_Value = value;
+        if (_value != value) {
+          _value = value;
 
           double perc = 0;
           if (Maximum - Minimum > 0)
             perc = (Value - Minimum) / (Maximum - Minimum) * 100.0;
           int chars = (int)Math.Round(perc / (100.0 / (double)Width));
-          if (m_Chars != chars) {
-            m_Chars = chars;
+          if (_chars != chars) {
+            _chars = chars;
             NeedsRedraw = true;
           }
         }

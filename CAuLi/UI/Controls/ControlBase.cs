@@ -4,9 +4,9 @@ namespace CAuLi.UI.Controls
 {
     abstract class ControlBase
     {
-        bool m_IsVisible = true;
-        bool m_HasFocus = false;
-        bool m_NeedsRedraw = true;
+        private bool _isVisible = true;
+        private bool _hasFocus;
+        private bool _needsRedraw = true;
 
         public int X { get; set; }
         public int Y { get; set; }
@@ -17,11 +17,11 @@ namespace CAuLi.UI.Controls
         public bool Focusable { get; set; }
         public bool HasFocus
         {
-            get { return m_HasFocus; }
+            get { return _hasFocus; }
             set
             {
-                if (m_HasFocus != value) {
-                    m_HasFocus = value;
+                if (_hasFocus != value) {
+                    _hasFocus = value;
                     FocusChanged();
                 }
             }
@@ -36,18 +36,18 @@ namespace CAuLi.UI.Controls
         public string Name { get; set; }
         public bool NeedsRedraw
         {
-            get { return m_NeedsRedraw; }
-            set { m_NeedsRedraw = value; }
+            get { return _needsRedraw; }
+            set { _needsRedraw = value; }
         }
 
         public bool IsEnabled { get; set; }
         public bool IsVisible
         {
-            get { return m_IsVisible; }
+            get { return _isVisible; }
             set
             {
-                if (m_IsVisible != value) {
-                    m_IsVisible = value;
+                if (_isVisible != value) {
+                    _isVisible = value;
                     NeedsRedraw = true;
                     IsVisibleChanged();
                 }

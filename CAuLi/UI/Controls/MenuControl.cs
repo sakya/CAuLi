@@ -24,10 +24,10 @@ namespace CAuLi.UI.Controls
             }
         }
 
-        MenuItem m_SelectedItem = null;
-        MenuItem m_FirstVisibleItem = null;
-        string m_SearchString = string.Empty;
-        DateTime m_LastSearch = DateTime.MinValue;
+        private MenuItem _selectedItem;
+        private MenuItem _firstVisibleItem;
+        private string _searchString = string.Empty;
+        private DateTime _lastSearch = DateTime.MinValue;
 
         public delegate void ItemTriggeredHandler(MenuControl sender, MenuItem item);
         public ItemTriggeredHandler ItemTriggered;
@@ -45,20 +45,20 @@ namespace CAuLi.UI.Controls
         public string EmptyText { get; set; }
         public MenuItem SelectedItem
         {
-            get { return m_SelectedItem; }
+            get { return _selectedItem; }
             set
             {
-                if (value != m_SelectedItem) {
-                    m_SelectedItem = value;
-                    SelectedItemChanged?.Invoke(this, m_SelectedItem);
+                if (value != _selectedItem) {
+                    _selectedItem = value;
+                    SelectedItemChanged?.Invoke(this, _selectedItem);
                 }
             }
         }
 
         public MenuItem FirstVisibleItem
         {
-            get { return m_FirstVisibleItem; }
-            set { m_FirstVisibleItem = value; }
+            get { return _firstVisibleItem; }
+            set { _firstVisibleItem = value; }
         }
 
         public void SelectMenuItem(string id)
@@ -94,11 +94,11 @@ namespace CAuLi.UI.Controls
             if (SelectedItem == null && Items.Count > 0)
                 SelectedItem = Items[0];
 
-            if (!Items.Contains(m_FirstVisibleItem))
-                m_FirstVisibleItem = null;
+            if (!Items.Contains(_firstVisibleItem))
+                _firstVisibleItem = null;
 
-            if (m_FirstVisibleItem == null && Items.Count > 0)
-                m_FirstVisibleItem = Items[0];
+            if (_firstVisibleItem == null && Items.Count > 0)
+                _firstVisibleItem = Items[0];
 
             screen.Clear(X, Y, Width, Height);
             int row = Y;
@@ -110,13 +110,13 @@ namespace CAuLi.UI.Controls
                 row++;
             }
 
-            if (m_FirstVisibleItem == null) {
+            if (_firstVisibleItem == null) {
                 if (!string.IsNullOrEmpty(EmptyText))
                     screen.WriteString(X, row, Width, ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, EmptyText);
                 return;
             }
 
-            for (int idx = Items.IndexOf(m_FirstVisibleItem); idx < Items.Count; idx++) {
+            for (int idx = Items.IndexOf(_firstVisibleItem); idx < Items.Count; idx++) {
                 if (idx < 0 || idx >= Items.Count)
                     continue;
 
@@ -156,7 +156,7 @@ namespace CAuLi.UI.Controls
             if (!string.IsNullOrEmpty(Title))
                 delta = 1;
 
-            int firstIdx = m_FirstVisibleItem != null ? Items.IndexOf(m_FirstVisibleItem) : 0;
+            int firstIdx = _firstVisibleItem != null ? Items.IndexOf(_firstVisibleItem) : 0;
             int idx = 0;
             bool handled = false;
             switch (keyPress.Key) {
@@ -164,13 +164,13 @@ namespace CAuLi.UI.Controls
                     if (SelectedItem == Items.First()) {
                         SelectedItem = Items.Last();
                         if (Items.Count >= Height)
-                            m_FirstVisibleItem = Items[Items.Count - Height + delta];
+                            _firstVisibleItem = Items[Items.Count - Height + delta];
                         else
-                            m_FirstVisibleItem = Items[0];
+                            _firstVisibleItem = Items[0];
                     } else {
                         SelectedItem = Items[Items.IndexOf(SelectedItem) - 1];
                         if (Items.IndexOf(SelectedItem) < firstIdx)
-                            m_FirstVisibleItem = SelectedItem;
+                            _firstVisibleItem = SelectedItem;
                     }
                     NeedsRedraw = true;
                     handled = true;
@@ -178,11 +178,11 @@ namespace CAuLi.UI.Controls
                 case ConsoleKey.DownArrow:
                     if (SelectedItem == Items.Last()) {
                         SelectedItem = Items.First();
-                        m_FirstVisibleItem = SelectedItem;
+                        _firstVisibleItem = SelectedItem;
                     } else {
                         SelectedItem = Items[Items.IndexOf(SelectedItem) + 1];
                         if (Items.IndexOf(SelectedItem) + delta >= firstIdx + Height)
-                            m_FirstVisibleItem = Items[firstIdx + 1];
+                            _firstVisibleItem = Items[firstIdx + 1];
                     }
                     NeedsRedraw = true;
                     handled = true;
@@ -190,15 +190,15 @@ namespace CAuLi.UI.Controls
                 case ConsoleKey.End:
                     SelectedItem = Items.Last();
                     if (Items.Count > Height)
-                        m_FirstVisibleItem = Items[Items.Count - Height + delta];
+                        _firstVisibleItem = Items[Items.Count - Height + delta];
                     else
-                        m_FirstVisibleItem = Items[0];
+                        _firstVisibleItem = Items[0];
                     NeedsRedraw = true;
                     handled = true;
                     break;
                 case ConsoleKey.Home:
                     SelectedItem = Items.First();
-                    m_FirstVisibleItem = SelectedItem;
+                    _firstVisibleItem = SelectedItem;
                     NeedsRedraw = true;
                     handled = true;
                     break;
@@ -207,13 +207,13 @@ namespace CAuLi.UI.Controls
                     if (idx < Items.Count - 5) {
                         SelectedItem = Items[idx + 5];
                         if (Items.IndexOf(SelectedItem) + delta >= firstIdx + Height)
-                            m_FirstVisibleItem = Items[firstIdx + 5];
+                            _firstVisibleItem = Items[firstIdx + 5];
                     } else {
                         SelectedItem = Items.Last();
                         if (Items.Count > Height)
-                            m_FirstVisibleItem = Items[Items.Count - Height + delta];
+                            _firstVisibleItem = Items[Items.Count - Height + delta];
                         else
-                            m_FirstVisibleItem = Items[0];
+                            _firstVisibleItem = Items[0];
                     }
                     NeedsRedraw = true;
                     handled = true;
@@ -223,10 +223,10 @@ namespace CAuLi.UI.Controls
                     if (idx >= 5) {
                         SelectedItem = Items[idx - 5];
                         if (Items.IndexOf(SelectedItem) < firstIdx)
-                            m_FirstVisibleItem = SelectedItem;
+                            _firstVisibleItem = SelectedItem;
                     } else {
                         SelectedItem = Items.First();
-                        m_FirstVisibleItem = SelectedItem;
+                        _firstVisibleItem = SelectedItem;
                     }
                     NeedsRedraw = true;
                     handled = true;
@@ -237,22 +237,22 @@ namespace CAuLi.UI.Controls
                     handled = true;
                     break;
                 default:
-                    if (m_LastSearch != DateTime.MinValue && (DateTime.UtcNow - m_LastSearch).TotalMilliseconds >= 500)
-                        m_SearchString = string.Empty;
-                    m_SearchString = string.Format("{0}{1}", m_SearchString, keyPress.KeyChar);
+                    if (_lastSearch != DateTime.MinValue && (DateTime.UtcNow - _lastSearch).TotalMilliseconds >= 500)
+                        _searchString = string.Empty;
+                    _searchString = string.Format("{0}{1}", _searchString, keyPress.KeyChar);
                     foreach (MenuItem i in Items) {
-                        if (i.GetSearchText().StartsWith(m_SearchString, StringComparison.InvariantCultureIgnoreCase)) {
-                            m_FirstVisibleItem = i;
+                        if (i.GetSearchText().StartsWith(_searchString, StringComparison.InvariantCultureIgnoreCase)) {
+                            _firstVisibleItem = i;
                             SelectedItem = i;
                             NeedsRedraw = true;
                             break;
                         }
                     }
                     if (NeedsRedraw)
-                        m_LastSearch = DateTime.UtcNow;
+                        _lastSearch = DateTime.UtcNow;
                     else {
-                        m_SearchString = string.Empty;
-                        m_LastSearch = DateTime.MinValue;
+                        _searchString = string.Empty;
+                        _lastSearch = DateTime.MinValue;
                     }
                     handled = true;
                     break;

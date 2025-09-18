@@ -5,32 +5,33 @@ namespace CAuLi.UI.Controls
 {
   class TextBlock : ControlBase
   {
-    string m_Text = string.Empty;
-    int m_FirstLine = 0;
+    private string _text = string.Empty;
+    private int _firstLine = 0;
 
-    List<string> m_Lines = new List<string>();
+    private List<string> _lines = [];
+
     public override void Draw(Screen screen)
     {
       NeedsRedraw = false;
-      m_Lines = Utility.String.SplitStringInLines(m_Text, Width);
+      _lines = Utility.String.SplitStringInLines(_text, Width);
 
       int width = Width;
       if (VScrollbarVisible)
         width -= 1;
 
       int row = Y;
-      for (int i = m_FirstLine; i<m_FirstLine+Height; i++) {
-        if (i >= m_Lines.Count)
+      for (int i = _firstLine; i<_firstLine+Height; i++) {
+        if (i >= _lines.Count)
           screen.WriteString(X, row, width, UI.ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, "".PadRight(width));
         else
-          screen.WriteString(X, row, width, UI.ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, m_Lines[i].Trim().PadRight(width));
+          screen.WriteString(X, row, width, UI.ColorTheme.Instance.Background, ColorTheme.Instance.Foreground, _lines[i].Trim().PadRight(width));
         row++;
       }
 
       // Vertical scrollbar:
       if (VScrollbarVisible) {
-        int chars =  Y + (int)Math.Round((double)Height / 100.0 * ((double)Height / (double)m_Lines.Count * 100.0));
-        int start = Y + (int)Math.Round((double)Height / 100.0 * ((double)m_FirstLine / (double)m_Lines.Count * 100.0));
+        int chars =  Y + (int)Math.Round((double)Height / 100.0 * ((double)Height / (double)_lines.Count * 100.0));
+        int start = Y + (int)Math.Round((double)Height / 100.0 * ((double)_firstLine / (double)_lines.Count * 100.0));
         if (start > Y + Height - chars - 1)
           start = Y + Height - chars - 1;
         int end = start + chars;
@@ -45,23 +46,23 @@ namespace CAuLi.UI.Controls
     }
 
     public string Text {
-      get { return m_Text; }
+      get { return _text; }
       set
       {
-        m_Text = value;
+        _text = value;
       }
     }
 
     public int FirstLine
     {
-      get { return m_FirstLine; }
-      set { m_FirstLine = value; }
+      get { return _firstLine; }
+      set { _firstLine = value; }
     }
 
     public bool VScrollbarVisible
     {
       get {
-        return m_Lines != null && m_Lines.Count > Height;
+        return _lines != null && _lines.Count > Height;
       }
     }
 
@@ -71,43 +72,43 @@ namespace CAuLi.UI.Controls
 
       switch (keyPress.Key) {
         case ConsoleKey.UpArrow:
-          if (m_FirstLine > 0) {
-            m_FirstLine--;
+          if (_firstLine > 0) {
+            _firstLine--;
             NeedsRedraw = true;
             return true;
           }
           break;
         case ConsoleKey.DownArrow:
-          if (m_FirstLine + 1 < m_Lines.Count) {
-            m_FirstLine++;
+          if (_firstLine + 1 < _lines.Count) {
+            _firstLine++;
             NeedsRedraw = true;
             return true;
           }
           break;
         case ConsoleKey.PageUp:
-          if (m_FirstLine > 0) {
-            m_FirstLine -= 10;
-            if (m_FirstLine < 0)
-              m_FirstLine = 0;
+          if (_firstLine > 0) {
+            _firstLine -= 10;
+            if (_firstLine < 0)
+              _firstLine = 0;
             NeedsRedraw = true;
             return true;
           }
           break;
         case ConsoleKey.PageDown:
-          if (m_FirstLine + 10 < m_Lines.Count) {
-            m_FirstLine += 10;
+          if (_firstLine + 10 < _lines.Count) {
+            _firstLine += 10;
             NeedsRedraw = true;
             return true;
           }
           break;
         case ConsoleKey.Home:
-          m_FirstLine = 0;
+          _firstLine = 0;
           NeedsRedraw = true;
           return true;
         case ConsoleKey.End:
-          m_FirstLine = m_Lines.Count - Height;
-          if (m_FirstLine < 0)
-            m_FirstLine = 0;
+          _firstLine = _lines.Count - Height;
+          if (_firstLine < 0)
+            _firstLine = 0;
           NeedsRedraw = true;
           return true;
       }

@@ -6,7 +6,7 @@ using Un4seen.Bass.AddOn.Mix;
 
 namespace CAuLi;
 
-class PlayerStatus
+internal class PlayerStatus
 {
     public string Track { get; set; }
     public Library.Classes.PlayerPlayList PlayList { get; set; }
@@ -17,7 +17,7 @@ class PlayerStatus
     public string EqualizerName { get; set; }
 }
 
-partial class Player
+internal partial class Player
 {
     public enum PlayingStatus
     {
@@ -33,18 +33,18 @@ partial class Player
         All
     }
 
-    private Mutex m_Mutex = new Mutex();
-    PlayingStatus m_Status = PlayingStatus.Stop;
-    RepeatType m_Repeat = RepeatType.None;
-    bool m_Shuffle = false;
+    private readonly Mutex _mutex = new();
+    private PlayingStatus _status = PlayingStatus.Stop;
+    private RepeatType _repeat = RepeatType.None;
+    private bool _shuffle;
 
-    float m_Volume = -1;
-    float m_Pan = 0;
-    bool m_IgnoreEnd = false;
+    private float _volume = -1;
+    private float _pan;
+    private bool _ignoreEnd;
 
-    int m_BassMixerStreamHandle = 0;
-    int m_BassStreamHandle = 0;
-    Library.Classes.PlayerPlayList m_Playlist = null;
+    private int _bassMixerStreamHandle;
+    private int _bassStreamHandle;
+    private Library.Classes.PlayerPlayList _playlist;
 
     #region delegates
     public delegate void TrackChangedHandler(Player sender, string fileName, int playlystCount, int playlistCurrentIndex);
@@ -61,13 +61,13 @@ partial class Player
     public ShuffleChangedHandler ShuffleChanged;
     #endregion
 
-    SYNCPROC m_SyncProcEndMix = null;
-    SYNCPROC m_SyncProcEnd = null;
+    private readonly SYNCPROC _syncProcEndMix;
+    private readonly SYNCPROC _syncProcEnd;
 
     public Player()
     {
-        m_SyncProcEndMix = new SYNCPROC(OnStreamEndMix);
-        m_SyncProcEnd = new SYNCPROC(OnStreamEnd);
+        _syncProcEndMix = OnStreamEndMix;
+        _syncProcEnd = OnStreamEnd;
     }
 
     public static Player Instance
@@ -107,8 +107,8 @@ partial class Player
     {
         get
         {
-            if (m_BassMixerStreamHandle != 0)
-                return Bass.BASS_ChannelGetInfo(m_BassMixerStreamHandle);
+            if (_bassMixerStreamHandle != 0)
+                return Bass.BASS_ChannelGetInfo(_bassMixerStreamHandle);
             return null;
         }
     }
@@ -117,8 +117,8 @@ partial class Player
     {
         get
         {
-            if (m_BassMixerStreamHandle != 0)
-                return Bass.BASS_ChannelIsActive(m_BassMixerStreamHandle) == BASSActive.BASS_ACTIVE_PLAYING;
+            if (_bassMixerStreamHandle != 0)
+                return Bass.BASS_ChannelIsActive(_bassMixerStreamHandle) == BASSActive.BASS_ACTIVE_PLAYING;
             return false;
         }
     }
@@ -127,9 +127,9 @@ partial class Player
     {
         get
         {
-            if (m_BassStreamHandle != 0) {
-                long pos = Bass.BASS_ChannelGetLength(m_BassStreamHandle);
-                return Bass.BASS_ChannelBytes2Seconds(m_BassStreamHandle, pos);
+            if (_bassStreamHandle != 0) {
+                long pos = Bass.BASS_ChannelGetLength(_bassStreamHandle);
+                return Bass.BASS_ChannelBytes2Seconds(_bassStreamHandle, pos);
             }
             return 0;
         }
@@ -139,46 +139,46 @@ partial class Player
     {
         get
         {
-            if (m_BassStreamHandle != 0) {
-                long pos = Bass.BASS_ChannelGetPosition(m_BassStreamHandle);
-                return Bass.BASS_ChannelBytes2Seconds(m_BassStreamHandle, pos);
+            if (_bassStreamHandle != 0) {
+                long pos = Bass.BASS_ChannelGetPosition(_bassStreamHandle);
+                return Bass.BASS_ChannelBytes2Seconds(_bassStreamHandle, pos);
             }
             return 0;
         }
 
         set
         {
-            if (m_BassStreamHandle != 0)
-                Bass.BASS_ChannelSetPosition(m_BassStreamHandle, value);
+            if (_bassStreamHandle != 0)
+                Bass.BASS_ChannelSetPosition(_bassStreamHandle, value);
         }
     }
 
     public Library.Classes.PlayerPlayList Playlist
     {
-        get { return m_Playlist; }
+        get { return _playlist; }
     }
 
     public float Volume
     {
         get
         {
-            if (m_BassMixerStreamHandle != 0) {
+            if (_bassMixerStreamHandle != 0) {
                 float vol = 0;
-                if (Bass.BASS_ChannelGetAttribute(m_BassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_VOL, ref vol)) {
-                    m_Volume = vol;
+                if (Bass.BASS_ChannelGetAttribute(_bassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_VOL, ref vol)) {
+                    _volume = vol;
                     return vol;
                 }
             }
-            return m_Volume >= 0 ? m_Volume : 0;
+            return _volume >= 0 ? _volume : 0;
         }
 
         set
         {
-            if (m_BassMixerStreamHandle != 0)
-                Bass.BASS_ChannelSetAttribute(m_BassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_VOL, value);
-            if (m_Volume != value) {
-                m_Volume = value;
-                VolumeChanged?.Invoke(this, m_Volume);
+            if (_bassMixerStreamHandle != 0)
+                Bass.BASS_ChannelSetAttribute(_bassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_VOL, value);
+            if (_volume != value) {
+                _volume = value;
+                VolumeChanged?.Invoke(this, _volume);
             }
         }
     }
@@ -187,14 +187,14 @@ partial class Player
     {
         get
         {
-            if (m_BassMixerStreamHandle != 0) {
+            if (_bassMixerStreamHandle != 0) {
                 float pan = 0;
-                if (Bass.BASS_ChannelGetAttribute(m_BassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_PAN, ref pan)) {
-                    m_Pan = pan;
+                if (Bass.BASS_ChannelGetAttribute(_bassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_PAN, ref pan)) {
+                    _pan = pan;
                     return pan;
                 }
             }
-            return m_Pan >= -1.0f && m_Pan <= 1.0f ? m_Pan : 0;
+            return _pan >= -1.0f && _pan <= 1.0f ? _pan : 0;
         }
 
         set
@@ -203,35 +203,35 @@ partial class Player
                 value = 1.0f;
             else if (value < -1.0f)
                 value = -1.0f;
-            if (m_BassMixerStreamHandle != 0)
-                Bass.BASS_ChannelSetAttribute(m_BassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_PAN, value);
-            if (m_Pan != value) {
-                m_Pan = value;
-                PanningChanged?.Invoke(this, m_Pan);
+            if (_bassMixerStreamHandle != 0)
+                Bass.BASS_ChannelSetAttribute(_bassMixerStreamHandle, BASSAttribute.BASS_ATTRIB_PAN, value);
+            if (_pan != value) {
+                _pan = value;
+                PanningChanged?.Invoke(this, _pan);
             }
         }
     }
 
     public RepeatType Repeat
     {
-        get { return m_Repeat; }
+        get { return _repeat; }
         set
         {
-            m_Repeat = value;
+            _repeat = value;
             RepeatChanged?.Invoke(this, value);
         }
     }
 
     public bool Shuffle
     {
-        get { return m_Shuffle; }
+        get { return _shuffle; }
         set
         {
-            m_Shuffle = value;
-            if (m_Playlist != null) {
-                string track = m_Playlist.TrackFiles[m_Playlist.CurrentIndex];
-                m_Playlist.SetShuffle(m_Shuffle);
-                m_Playlist.CurrentIndex = m_Playlist.TrackFiles.IndexOf(track);
+            _shuffle = value;
+            if (_playlist != null) {
+                string track = _playlist.TrackFiles[_playlist.CurrentIndex];
+                _playlist.SetShuffle(_shuffle);
+                _playlist.CurrentIndex = _playlist.TrackFiles.IndexOf(track);
             }
             ShuffleChanged?.Invoke(this, value);
         }
@@ -267,30 +267,30 @@ partial class Player
     {
         PlayerStatus res = new PlayerStatus()
         {
-            Track = m_Playlist != null ? m_Playlist.TrackFiles[m_Playlist.CurrentIndex] : string.Empty,
+            Track = _playlist != null ? _playlist.TrackFiles[_playlist.CurrentIndex] : string.Empty,
             TrackPosition = TrackPosition,
-            PlayList = m_Playlist,
-            Status = m_Status,
-            Repeat = m_Repeat,
+            PlayList = _playlist,
+            Status = _status,
+            Repeat = _repeat,
             EqualizerEnabled = EqualizerEnabled,
-            EqualizerName = m_EqualizerName,
+            EqualizerName = _equalizerName,
         };
         return res;
     }
 
     public bool OpenPlaylist(Library.Classes.PlayerPlayList playlist)
     {
-        m_Playlist = playlist;
-        if (m_Playlist != null && m_Playlist.TrackFiles != null && m_Playlist.TrackFiles.Count > 0) {
-            m_Playlist.SetShuffle(Shuffle);
+        _playlist = playlist;
+        if (_playlist != null && _playlist.TrackFiles != null && _playlist.TrackFiles.Count > 0) {
+            _playlist.SetShuffle(Shuffle);
             FreeMixer();
-            m_BassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
+            _bassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
             if (!string.IsNullOrEmpty(AppSettings.Instance.EqualizerName))
                 SetEqualizer(AppSettings.Instance.EqualizerName);
-            if (m_Volume >= 0)
-                Volume = m_Volume;
-            if (m_Pan >= -1.0f && m_Pan <= 1.0f)
-                Panning = m_Pan;
+            if (_volume >= 0)
+                Volume = _volume;
+            if (_pan >= -1.0f && _pan <= 1.0f)
+                Panning = _pan;
 
             return SetTrack();
         }
@@ -299,46 +299,46 @@ partial class Player
 
     public void Play()
     {
-        if (m_BassMixerStreamHandle != 0) {
-            m_IgnoreEnd = true;
-            Bass.BASS_ChannelPlay(m_BassMixerStreamHandle, false);
-            m_IgnoreEnd = false;
-            m_Status = PlayingStatus.Play;
-            PlayingStatusChanged?.Invoke(this, m_Status);
+        if (_bassMixerStreamHandle != 0) {
+            _ignoreEnd = true;
+            Bass.BASS_ChannelPlay(_bassMixerStreamHandle, false);
+            _ignoreEnd = false;
+            _status = PlayingStatus.Play;
+            PlayingStatusChanged?.Invoke(this, _status);
         }
     }
 
     public void Pause()
     {
-        if (m_BassMixerStreamHandle != 0) {
-            Bass.BASS_ChannelPause(m_BassMixerStreamHandle);
-            m_Status = PlayingStatus.Pause;
-            PlayingStatusChanged?.Invoke(this, m_Status);
+        if (_bassMixerStreamHandle != 0) {
+            Bass.BASS_ChannelPause(_bassMixerStreamHandle);
+            _status = PlayingStatus.Pause;
+            PlayingStatusChanged?.Invoke(this, _status);
         }
     }
 
     public void Stop()
     {
-        if (m_BassMixerStreamHandle != 0) {
+        if (_bassMixerStreamHandle != 0) {
             FreeMixer();
-            m_Status = PlayingStatus.Stop;
-            PlayingStatusChanged?.Invoke(this, m_Status);
+            _status = PlayingStatus.Stop;
+            PlayingStatusChanged?.Invoke(this, _status);
         }
     }
 
     public void Play(int index)
     {
-        if (m_Playlist != null) {
-            m_IgnoreEnd = true;
-            if (index < m_Playlist.TracksCount)
-                m_Playlist.CurrentIndex = index;
+        if (_playlist != null) {
+            _ignoreEnd = true;
+            if (index < _playlist.TracksCount)
+                _playlist.CurrentIndex = index;
             else
-                m_Playlist.CurrentIndex = 0;
+                _playlist.CurrentIndex = 0;
 
             FreeMixer();
-            m_BassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
-            if (m_Volume >= 0)
-                Volume = m_Volume;
+            _bassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
+            if (_volume >= 0)
+                Volume = _volume;
 
             if (SetTrack())
                 Play();
@@ -347,17 +347,17 @@ partial class Player
 
     public void Previous()
     {
-        if (m_Playlist != null) {
-            m_IgnoreEnd = true;
-            if (m_Playlist.CurrentIndex > 0)
-                m_Playlist.CurrentIndex--;
+        if (_playlist != null) {
+            _ignoreEnd = true;
+            if (_playlist.CurrentIndex > 0)
+                _playlist.CurrentIndex--;
             else
-                m_Playlist.CurrentIndex = m_Playlist.TracksCount - 1;
+                _playlist.CurrentIndex = _playlist.TracksCount - 1;
 
             FreeMixer();
-            m_BassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
-            if (m_Volume >= 0)
-                Volume = m_Volume;
+            _bassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
+            if (_volume >= 0)
+                Volume = _volume;
 
             if (SetTrack())
                 Play();
@@ -366,17 +366,17 @@ partial class Player
 
     public void Next()
     {
-        if (m_Playlist != null) {
-            m_IgnoreEnd = true;
-            if (m_Playlist.CurrentIndex < m_Playlist.TracksCount - 1)
-                m_Playlist.CurrentIndex++;
+        if (_playlist != null) {
+            _ignoreEnd = true;
+            if (_playlist.CurrentIndex < _playlist.TracksCount - 1)
+                _playlist.CurrentIndex++;
             else
-                m_Playlist.CurrentIndex = 0;
+                _playlist.CurrentIndex = 0;
 
             FreeMixer();
-            m_BassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
-            if (m_Volume >= 0)
-                Volume = m_Volume;
+            _bassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
+            if (_volume >= 0)
+                Volume = _volume;
 
             if (SetTrack())
                 Play();
@@ -388,18 +388,18 @@ partial class Player
     private bool SetTrack()
     {
         FreeMixer();
-        m_BassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
-        if (m_Volume >= 0)
-            Volume = m_Volume;
-        m_BassStreamHandle = Bass.BASS_StreamCreateFile(m_Playlist.TrackFiles[m_Playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
-        if (m_BassStreamHandle != 0) {
-            Bass.BASS_ChannelSetSync(m_BassMixerStreamHandle, BASSSync.BASS_SYNC_MIXTIME | BASSSync.BASS_SYNC_END, 0, m_SyncProcEndMix, IntPtr.Zero);
-            Bass.BASS_ChannelSetSync(m_BassMixerStreamHandle, BASSSync.BASS_SYNC_END, 0, m_SyncProcEnd, IntPtr.Zero);
-            BassMix.BASS_Mixer_StreamAddChannel(m_BassMixerStreamHandle, m_BassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
-            Bass.BASS_ChannelSetPosition(m_BassMixerStreamHandle, 0);
-            TrackChanged?.Invoke(this, m_Playlist.TrackFiles[m_Playlist.CurrentIndex], m_Playlist.TracksCount, m_Playlist.CurrentIndex);
+        _bassMixerStreamHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_END);
+        if (_volume >= 0)
+            Volume = _volume;
+        _bassStreamHandle = Bass.BASS_StreamCreateFile(_playlist.TrackFiles[_playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
+        if (_bassStreamHandle != 0) {
+            Bass.BASS_ChannelSetSync(_bassMixerStreamHandle, BASSSync.BASS_SYNC_MIXTIME | BASSSync.BASS_SYNC_END, 0, _syncProcEndMix, IntPtr.Zero);
+            Bass.BASS_ChannelSetSync(_bassMixerStreamHandle, BASSSync.BASS_SYNC_END, 0, _syncProcEnd, IntPtr.Zero);
+            BassMix.BASS_Mixer_StreamAddChannel(_bassMixerStreamHandle, _bassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
+            Bass.BASS_ChannelSetPosition(_bassMixerStreamHandle, 0);
+            TrackChanged?.Invoke(this, _playlist.TrackFiles[_playlist.CurrentIndex], _playlist.TracksCount, _playlist.CurrentIndex);
         }
-        return m_BassStreamHandle != 0;
+        return _bassStreamHandle != 0;
     } // SetTrack
 
     private void LoadPlugins(List<string> plugins)
@@ -415,47 +415,47 @@ partial class Player
 
     private async void OnStreamEndMix(int handle, int channel, int data, IntPtr user)
     {
-        if (m_IgnoreEnd) {
-            m_IgnoreEnd = false;
+        if (_ignoreEnd) {
+            _ignoreEnd = false;
             return;
         }
 
-        m_Mutex.WaitOne();
-        if (m_Playlist != null) {
-            var playedTrack = await Library.Library.Instance.GetTrack(m_Playlist.TrackFiles[m_Playlist.CurrentIndex]);
+        _mutex.WaitOne();
+        if (_playlist != null) {
+            var playedTrack = await Library.Library.Instance.GetTrack(_playlist.TrackFiles[_playlist.CurrentIndex]);
             if (playedTrack != null)
                 Library.Library.Instance.TrackPlayed(playedTrack);
 
             if (Repeat == RepeatType.One) {
                 // Repeat track
-                m_BassStreamHandle = Bass.BASS_StreamCreateFile(m_Playlist.TrackFiles[m_Playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
-                if (m_BassStreamHandle != 0) {
-                    BassMix.BASS_Mixer_StreamAddChannel(m_BassMixerStreamHandle, m_BassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
-                    Bass.BASS_ChannelSetPosition(m_BassMixerStreamHandle, 0);
+                _bassStreamHandle = Bass.BASS_StreamCreateFile(_playlist.TrackFiles[_playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
+                if (_bassStreamHandle != 0) {
+                    BassMix.BASS_Mixer_StreamAddChannel(_bassMixerStreamHandle, _bassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
+                    Bass.BASS_ChannelSetPosition(_bassMixerStreamHandle, 0);
                 }
             } else {
-                if (m_Playlist.CurrentIndex + 1 < m_Playlist.TrackFiles.Count) {
+                if (_playlist.CurrentIndex + 1 < _playlist.TrackFiles.Count) {
                     // Next track
-                    m_BassStreamHandle = Bass.BASS_StreamCreateFile(m_Playlist.TrackFiles[++m_Playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
-                    if (m_BassStreamHandle != 0) {
-                        BassMix.BASS_Mixer_StreamAddChannel(m_BassMixerStreamHandle, m_BassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
-                        Bass.BASS_ChannelSetPosition(m_BassMixerStreamHandle, 0);
-                        TrackChanged?.Invoke(this, m_Playlist.TrackFiles[m_Playlist.CurrentIndex], m_Playlist.TracksCount, m_Playlist.CurrentIndex);
+                    _bassStreamHandle = Bass.BASS_StreamCreateFile(_playlist.TrackFiles[++_playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
+                    if (_bassStreamHandle != 0) {
+                        BassMix.BASS_Mixer_StreamAddChannel(_bassMixerStreamHandle, _bassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
+                        Bass.BASS_ChannelSetPosition(_bassMixerStreamHandle, 0);
+                        TrackChanged?.Invoke(this, _playlist.TrackFiles[_playlist.CurrentIndex], _playlist.TracksCount, _playlist.CurrentIndex);
                     }
                 } else {
                     // Playlist end
                     if (Repeat == RepeatType.All) {
                         // Repeat all:
-                        m_Playlist.CurrentIndex = 0;
-                        m_BassStreamHandle = Bass.BASS_StreamCreateFile(m_Playlist.TrackFiles[m_Playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
-                        if (m_BassStreamHandle != 0) {
-                            BassMix.BASS_Mixer_StreamAddChannel(m_BassMixerStreamHandle, m_BassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
-                            Bass.BASS_ChannelSetPosition(m_BassMixerStreamHandle, 0);
-                            TrackChanged?.Invoke(this, m_Playlist.TrackFiles[m_Playlist.CurrentIndex], m_Playlist.TracksCount, m_Playlist.CurrentIndex);
+                        _playlist.CurrentIndex = 0;
+                        _bassStreamHandle = Bass.BASS_StreamCreateFile(_playlist.TrackFiles[_playlist.CurrentIndex], 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_ASYNCFILE | BASSFlag.BASS_SAMPLE_FLOAT);
+                        if (_bassStreamHandle != 0) {
+                            BassMix.BASS_Mixer_StreamAddChannel(_bassMixerStreamHandle, _bassStreamHandle, BASSFlag.BASS_STREAM_AUTOFREE);
+                            Bass.BASS_ChannelSetPosition(_bassMixerStreamHandle, 0);
+                            TrackChanged?.Invoke(this, _playlist.TrackFiles[_playlist.CurrentIndex], _playlist.TracksCount, _playlist.CurrentIndex);
                         }
                     } else {
                         // Finished
-                        m_Playlist.CurrentIndex = -1;
+                        _playlist.CurrentIndex = -1;
                     }
                 }
             }
@@ -463,35 +463,35 @@ partial class Player
             if (playedTrack != null)
                 Library.Library.Instance.TrackPlayed(playedTrack);
         }
-        m_Mutex.ReleaseMutex();
+        _mutex.ReleaseMutex();
     } // OnStreamEndMix
 
     private void OnStreamEnd(int handle, int channel, int data, IntPtr user)
     {
-        m_Mutex.WaitOne();
-        if (m_Playlist != null) {
-            if (m_Playlist.CurrentIndex == -1) {
+        _mutex.WaitOne();
+        if (_playlist != null) {
+            if (_playlist.CurrentIndex == -1) {
                 FreeMixer();
-                m_Playlist.CurrentIndex = 0;
-                m_Status = PlayingStatus.Stop;
-                PlayingStatusChanged?.Invoke(this, m_Status);
-                TrackChanged?.Invoke(this, m_Playlist.TrackFiles[m_Playlist.CurrentIndex], m_Playlist.TracksCount, m_Playlist.CurrentIndex);
+                _playlist.CurrentIndex = 0;
+                _status = PlayingStatus.Stop;
+                PlayingStatusChanged?.Invoke(this, _status);
+                TrackChanged?.Invoke(this, _playlist.TrackFiles[_playlist.CurrentIndex], _playlist.TracksCount, _playlist.CurrentIndex);
             }
         }
-        m_Mutex.ReleaseMutex();
+        _mutex.ReleaseMutex();
     } // OnStreamEnd
 
     private void FreeMixer()
     {
-        if (m_BassMixerStreamHandle != 0) {
+        if (_bassMixerStreamHandle != 0) {
             RemoveEqualizer();
-            Bass.BASS_ChannelStop(m_BassMixerStreamHandle);
-            if (!Bass.BASS_StreamFree(m_BassMixerStreamHandle)) {
+            Bass.BASS_ChannelStop(_bassMixerStreamHandle);
+            if (!Bass.BASS_StreamFree(_bassMixerStreamHandle)) {
                 BASSError err = Bass.BASS_ErrorGetCode();
             }
         }
-        m_BassStreamHandle = 0;
-        m_BassMixerStreamHandle = 0;
+        _bassStreamHandle = 0;
+        _bassMixerStreamHandle = 0;
     } // FreeMixer
     #endregion
 }
