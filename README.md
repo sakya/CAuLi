@@ -2,6 +2,8 @@
 ## Console Audio Library ##
 CAuLi is a command line program to manage your music library
 
+<img width="969" height="512" alt="image" src="https://github.com/user-attachments/assets/8e199d47-ced0-4348-b174-7864215beccf" />
+
 **Features:**
 
 * Gapeless playback
