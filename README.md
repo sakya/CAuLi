@@ -2,6 +2,8 @@
 ## Console Audio Library ##
 CAuLi is a command line audio player
 
+<img width="969" height="513" alt="image" src="https://github.com/user-attachments/assets/513913f8-3324-45bb-86da-9fe21d26f580" />
+
 <img width="969" height="512" alt="image" src="https://github.com/user-attachments/assets/8e199d47-ced0-4348-b174-7864215beccf" />
 
 **Features:**
