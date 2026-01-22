@@ -12,3 +12,17 @@ CAuLi is a command line audio player
 * 10 band equalizer (with editable presets)
 * Lyrics
 * Color themes
+
+### Configuration
+
+Configuration is stored in a XML file.
+
+The configuration file on Windows is in `%UserProfile%\AppData\Local\CAuLi`, on Linux is in `~/.local/share/CauLi`
+
+To configure the folders containing your music files edit the `MusicFolders` value (to add multiple folders separate them with a `;`)
+
+```xml
+<ConfigValue Name="MusicFolders">
+  <Value>d:\Music;c:\Music</Value>
+</ConfigValue>
+```
